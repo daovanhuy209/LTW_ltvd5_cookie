@@ -12,15 +12,11 @@ exit();
 <title>Success</title>
 </head>
 
-<body>
+<body style="text-align:center;margin-top:100px">
 
 <h1>Đăng nhập thành công</h1>
 
 <h2>Xin chào <?php echo $_COOKIE["username"]; ?></h2>
-
-<br>
-
-<a href="login.php">Quay lại đăng nhập</a>
 
 </body>
 </html>
