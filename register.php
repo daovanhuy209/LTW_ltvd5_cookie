@@ -1,93 +1,74 @@
 <?php
-$errors = [];
-$username = "";
-$email = "";
+$errors=[];
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
 
-$username = htmlspecialchars($_POST["username"]);
-$email = htmlspecialchars($_POST["email"]);
-$password = $_POST["password"];
-$repeat = $_POST["repeat-password"];
+$email=$_POST["email"];
+$password=$_POST["password"];
 
-if(empty($username)){
-$errors["username"]="Vui lòng nhập họ tên";
-}
+if(isset($_COOKIE["email"]) && isset($_COOKIE["password"])){
 
-if(empty($email)){
-$errors["email"]="Vui lòng nhập email";
-}elseif(!filter_var($email,FILTER_VALIDATE_EMAIL)){
-$errors["email"]="Email không đúng định dạng";
-}
+if($email==$_COOKIE["email"] && $password==$_COOKIE["password"]){
 
-if(empty($password)){
-$errors["password"]="Vui lòng nhập mật khẩu";
-}elseif(strlen($password)<6){
-$errors["password"]="Mật khẩu phải ít nhất 6 ký tự";
-}
-
-if($repeat!=$password){
-$errors["repeat"]="Mật khẩu xác nhận không khớp";
-}
-
-if(empty($errors)){
-
-setcookie("username",$username,time()+3600);
-setcookie("email",$email,time()+3600);
-setcookie("password",$password,time()+3600);
-
-header("Location: login.php");
+header("Location: success.php");
 exit();
 
+}else{
+$errors[]="Sai email hoặc mật khẩu";
+}
+
+}else{
+$errors[]="Chưa đăng ký tài khoản";
 }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="./reset.css">
-<link rel="stylesheet" href="./style.css">
-<title>Register</title>
+<link rel="stylesheet" href="reset.css">
+<link rel="stylesheet" href="style.css">
+<title>Login</title>
 </head>
 
 <body>
 
-<h2>Đăng ký</h2>
+<div id="form-content">
 
-<?php if(!empty($errors)): ?>
-<div style="color:red">
-<?php foreach($errors as $error): ?>
-<p><?php echo $error; ?></p>
-<?php endforeach; ?>
-</div>
-<?php endif; ?>
+<a href="login.php">
+<h2 class="active">ĐĂNG NHẬP</h2>
+</a>
+
+<a href="register.php">
+<h2>ĐĂNG KÝ</h2>
+</a>
+
+<img src="avatar.png" id="avatar">
+
+<?php
+if(!empty($errors)){
+foreach($errors as $e){
+echo "<p style='color:red'>$e</p>";
+}
+}
+?>
 
 <form method="post">
 
-<input type="text" name="username" placeholder="Họ tên" value="<?php echo $username; ?>">
-
-<br><br>
-
-<input type="email" name="email" placeholder="Email" value="<?php echo $email; ?>">
-
-<br><br>
+<input type="email" name="email" placeholder="Email">
 
 <input type="password" name="password" placeholder="Mật khẩu">
 
-<br><br>
-
-<input type="password" name="repeat-password" placeholder="Xác nhận mật khẩu">
-
-<br><br>
-
-<input type="submit" value="Đăng ký">
+<input type="submit" value="ĐĂNG NHẬP">
 
 </form>
 
-<br>
+<div id="form-footer">
+<a href="#">Quên mật khẩu?</a>
+</div>
 
-<a href="login.php">Đăng nhập</a>
+</div>
 
 </body>
 </html>
