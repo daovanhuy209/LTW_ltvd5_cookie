@@ -1,75 +1,94 @@
 <?php
 $errors=[];
+$username="";
+$email="";
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
 
+$username=$_POST["username"];
 $email=$_POST["email"];
 $password=$_POST["password"];
+$repeat=$_POST["repeat-password"];
+
+if(empty($username)){
+$errors[]="Vui lòng nhập họ tên";
+}
 
 if(empty($email)){
-$errors["email"]="Vui lòng nhập email";
+$errors[]="Vui lòng nhập email";
 }
 
 if(empty($password)){
-$errors["password"]="Vui lòng nhập mật khẩu";
+$errors[]="Vui lòng nhập mật khẩu";
+}
+
+if($password!=$repeat){
+$errors[]="Mật khẩu xác nhận không khớp";
 }
 
 if(empty($errors)){
 
-if(isset($_COOKIE["email"]) && isset($_COOKIE["password"])){
+setcookie("username",$username,time()+3600);
+setcookie("email",$email,time()+3600);
+setcookie("password",$password,time()+3600);
 
-if($email==$_COOKIE["email"] && $password==$_COOKIE["password"]){
-
-header("Location: success.php");
+header("Location: login.php");
 exit();
-
-}else{
-$errors["login"]="Sai email hoặc mật khẩu";
-}
-
-}else{
-$errors["login"]="Chưa có dữ liệu đăng ký";
-}
 
 }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
+<link rel="stylesheet" href="reset.css">
+<link rel="stylesheet" href="style.css">
+<title>Register</title>
 </head>
 
 <body>
 
-<h2>Đăng nhập</h2>
+<div id="form-content">
 
-<?php if(!empty($errors)): ?>
-<div style="color:red">
-<?php foreach($errors as $error): ?>
-<p><?php echo $error; ?></p>
-<?php endforeach; ?>
-</div>
-<?php endif; ?>
+<a href="login.php">
+<h2>ĐĂNG NHẬP</h2>
+</a>
+
+<a href="register.php">
+<h2 class="active">ĐĂNG KÝ</h2>
+</a>
+
+<img src="avatar.png" id="avatar">
+
+<?php
+if(!empty($errors)){
+foreach($errors as $e){
+echo "<p style='color:red'>$e</p>";
+}
+}
+?>
 
 <form method="post">
 
-<input type="email" name="email" placeholder="Email">
+<input type="text" name="username" placeholder="Họ tên">
 
-<br><br>
+<input type="email" name="email" placeholder="Email">
 
 <input type="password" name="password" placeholder="Mật khẩu">
 
-<br><br>
+<input type="password" name="repeat-password" placeholder="Xác nhận mật khẩu">
 
-<input type="submit" value="Đăng nhập">
+<input type="submit" value="ĐĂNG KÝ">
 
 </form>
 
-<br>
+<div id="form-footer">
+<a href="#">Quên mật khẩu?</a>
+</div>
 
-<a href="register.php">Đăng ký</a>
+</div>
 
 </body>
 </html>
